@@ -78,7 +78,9 @@
     <div class="shop_content">
       <h4 style="font-size:1em;font-weight:400;">商家实景</h4>
       <div style="display:flex;justify-content: start;flex-wrap: wrap;padding:15px 0px">
-        <van-image v-for="(item,index) in shop.pics" :key="index"
+        <van-image
+          v-for="(item,index) in shop.pics"
+          :key="index"
           width="6rem"
           height="4rem"
           fit="cover"
@@ -88,22 +90,23 @@
       </div>
     </div>
     <div class="shop_content">
-        <h4 style="font-size:1em;font-weight:400;padding-bottom:10px">商家信息</h4>
-        <ul>
-            <li style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em">
-                该商户支持开发票，请在下单时填写好发票抬头
-            </li>
-            <li style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em">
-                品类：其他菜系，包子粥店
-            </li>
-            <li style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em">
-                地址：xxxxxxxxxxxxxxxx
-            </li>
-            <li style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em">
-                营业时间：<span>{{transDate(date[0])+'-'+transDate(date[1])}}</span>
-            </li>
-            
-        </ul>
+      <h4 style="font-size:1em;font-weight:400;padding-bottom:10px">商家信息</h4>
+      <ul>
+        <li
+          style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em"
+        >该商户支持开发票，请在下单时填写好发票抬头</li>
+        <li
+          style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em"
+        >品类：其他菜系，包子粥店</li>
+        <li
+          style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em"
+        >地址：xxxxxxxxxxxxxxxx</li>
+        <li style="padding:15px 10px;border-top: 1px solid rgb(243, 246, 247);font-size:0.5em">
+          营业时间：
+          <span>{{transDate(date[0])+'-'+transDate(date[1])}}</span>
+        </li>
+        <li>{{getname}}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -114,15 +117,17 @@ export default {
   created() {
     Shop_seller().then(res => {
       //console.log(res.data.data);
-      this.shop ={...res.data.data} ;
-      this.date=res.data.data.date
+      this.shop = { ...res.data.data };
+      this.date = res.data.data.date;
+      //this.$store.state.data = res.data.data;
+      // console.log(this.$store.state.data)
     });
   },
   data() {
     return {
       shop: {},
       isconlector: false,
-      date:[]
+      date: []
     };
   },
   methods: {
@@ -150,6 +155,12 @@ export default {
       s = s < 10 ? "0" + s : s;
       arr = `${h}:${m}:${s}`;
       return arr;
+    }
+  },
+  computed: {
+    getname(){
+      //this.$store.commit("changeName", "啃德基");
+      return this.$store.state.data.name;
     }
   }
 };
@@ -203,7 +214,6 @@ export default {
     margin-top: 20px;
     background: #fff;
     padding: 10px;
-    
   }
 }
 </style>

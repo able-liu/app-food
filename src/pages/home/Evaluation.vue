@@ -91,6 +91,9 @@
         </div>
       </div>
     </div>
+    <div>
+        <span @click="changename">{{getName}}</span>
+    </div>
   </div>
 </template>
 
@@ -101,8 +104,7 @@ export default {
     Shop_ratings().then(res => {
       this.value = this.svg(res.data.data.map(item => item.score));
       this.value2 = parseFloat(Math.ceil(this.value).toFixed(1));
-      this.datalist = res.data.data;
-      
+      this.datalist = res.data.data;  
     });
   },
   data() {
@@ -142,7 +144,15 @@ export default {
       s = s < 10 ? "0" + s : s;
       arr = `${year}-${month}-${day} ${h}:${m}:${s}`;
       return arr;
+    },
+    changename(){
+        this.$store.commit('changeName','老干妈')
     }
+  },
+  computed:{
+      getName(){
+          return this.$store.state.data.name
+      }
   }
 };
 </script>
