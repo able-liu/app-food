@@ -3,13 +3,22 @@
     <!-- 左菜单 -->
     <div id="left_list_box" style="height:100%;width:85px">
       <div>
+        <!-- <van-sidebar
+          @click="changelist(index)"
+          :class="{active_item:activeKey==index}"
+          v-for="(item,index) in goods"
+          :key="index"
+        >
+          <van-sidebar-item :title="item.name" badge="5" />
+        </van-sidebar> -->
         <a
           @click="changelist(index)"
           :class="{active_item:activeKey==index}"
           v-for="(item,index) in goods"
           :key="index"
           v-html="item.name"
-        ></a>
+        >
+        </a>
       </div>
     </div>
     <!-- 右商品列表 -->
@@ -20,7 +29,6 @@
           <van-card
             v-for="(food,i) in item.foods"
             :key="i"
-            :num="food.num"
             :price="food.price.toFixed(2)"
             :desc="food.goodsDesc"
             :title="food.name"
@@ -32,16 +40,17 @@
               <van-tag plain type="success">{{'好评率'+food.rating+'%'}}</van-tag>
             </template>
             <template #footer>
-              <van-button @click="food.num--" round v-show="food.num!=1" size="mini">-</van-button>
+              <van-button @click="changeNum(food.id,-1)" round v-show="food.num!=0" size="mini">-</van-button>
               <label>
                 <input
                   style="border:none;width:20px;text-align:center;margin-left:5px"
                   type="text"
                   readonly
                   v-model="food.num"
+                  v-show="food.num!=0"
                 />
               </label>
-              <van-button @click="food.num++" round size="mini">+</van-button>
+              <van-button @click="changeNum(food.id,1)" round size="mini">+</van-button>
             </template>
           </van-card>
         </div>
@@ -58,17 +67,19 @@ export default {
     Goods_list().then(res => {
       res.data.goodsList.forEach(item => {
         item.foods.forEach(food => {
-          food.num = 1;
+          food.num = 0;
         });
       });
-      this.goods = res.data.goodsList;
+      //this.goods = res.data.goodsList;
+      //初始化store中的商品列表
+      this.$store.commit("setInitGoods", res.data.goodsList);
     });
   },
   data() {
     return {
-      goods: [], //商品列表
+      //goods: [], //商品列表
       activeKey: 0, //左菜单激活索引
-      ischange:true
+      ischange: true
     };
   },
   mounted() {
@@ -79,8 +90,8 @@ export default {
       probeType: 3
     });
     //右连左
-      if(this.ischange){
-        this.scroll2.on("scroll", obj => {
+    if (this.ischange) {
+      this.scroll2.on("scroll", obj => {
         //获取当前滚动的高度
         let _y = Math.abs(obj.y);
         for (let i of this.getHeight) {
@@ -89,17 +100,21 @@ export default {
           }
         }
       });
-      }
-      this.scroll2.on('scrollEnd',()=>{
-        this.ischange=true
-      })
+    }
+    this.scroll2.on("scrollEnd", () => {
+      this.ischange = true;
+    });
   },
   methods: {
     //左连右
     changelist(index) {
-      this.ischange=false
+      this.ischange = false;
       this.activeKey = index;
       this.scroll2.scrollToElement(document.getElementById(index), 800);
+    },
+    //点击修改store中的➕➖修改对应商品的数量
+    changeNum(id, val) {
+      this.$store.commit("changeNum", { id, val });
     }
   },
   computed: {
@@ -117,6 +132,10 @@ export default {
         totalHeight += divHeight;
       }
       return arr_height;
+    },
+    //从store中获取商品列表
+    goods() {
+      return this.$store.state.goods;
     }
   }
 };

@@ -105,7 +105,7 @@
           营业时间：
           <span>{{transDate(date[0])+'-'+transDate(date[1])}}</span>
         </li>
-        <li>{{getname}}</li>
+        
       </ul>
     </div>
   </div>
@@ -158,10 +158,7 @@ export default {
     }
   },
   computed: {
-    getname(){
-      //this.$store.commit("changeName", "啃德基");
-      return this.$store.state.data.name;
-    }
+    
   }
 };
 </script>

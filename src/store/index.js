@@ -5,24 +5,37 @@ Vue.use(Vuex);
 var store=new Vuex.Store({
     //数据存放
     state:{
-        arr:[],
-        data:{
-            name:'fdsf'
-        }
+        goods:[]//商品列表
     },
     //改变
     mutations:{
-        addobj(state,obj){
-            state.arr.push(obj)
+        //初始化商品列表
+        setInitGoods(state,val){
+            state.goods=val
         },
-        changeName(state,val){
-            state.data.name=val
+        //修改数量
+        changeNum(state,params){
+            state.goods.forEach(item =>{
+                item.foods.forEach(food =>{
+                    if(food.id==params.id){
+                        food.num+=params.val;
+                        return
+                    }
+                })
+            })
         }
     },
     //计算属性
     getters:{
-        getName:state => {
-            return state.arr.filter(item => item.name.includes('2'))
+        //获取添加的商品列表
+        getGoodsCar(state){
+            let shopCarlist=[];
+            state.goods.forEach(item =>{
+                item.foods.forEach(food =>{
+                    if(food.num>0) shopCarlist.push(food)
+                })
+            })
+            return shopCarlist;
         }
     }
 });

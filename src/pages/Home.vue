@@ -38,13 +38,13 @@
     <div id="footer">
       <van-goods-action>
         <van-goods-action-icon icon="chat-o" text="客服" @click="onClickIcon" />
-        <van-goods-action-icon icon="cart-o" text="购物车" @click="showCar=!showCar" />
+        <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopNum==0?'':shopNum" :color="shopNum==0?'':'#ff5000'" @click="showCar=!showCar" />
         <van-goods-action-icon icon="shop-o" text="店铺" @click="onClickIcon" />
         <van-goods-action-button type="danger" text="立即购买" @click="onClickButton" />
       </van-goods-action>
        <!-- 购物车 -->
       <transition name="slide-fade">
-        <div v-show="showCar" class="shopcar"></div>
+        <shopCar v-show="showCar" class="shopcar"></shopCar>
       </transition>
     </div>
   </div>
@@ -53,7 +53,11 @@
 <script>
 import { Shop_seller } from "@/api/apis";
 import { Toast } from "vant";
+import shopCar from './Shopcar.vue';
 export default {
+  components:{
+    shopCar
+  },
   created() {
     Shop_seller().then(res => {
       this.avatar = res.data.data.avatar;
@@ -90,6 +94,15 @@ export default {
         backgroundRepeat: "no-repeat",
         backgroundSize: "100%"
       };
+    },
+    //获取购物车中的商品数量
+    shopNum(){
+      let totalNum=0;
+      this.$store.getters.getGoodsCar.forEach(item => {
+        totalNum+=item.num
+      });
+      if(totalNum>99){return '99+'}
+      return totalNum
     }
   }
 };
@@ -187,11 +200,14 @@ export default {
     height: 50px;
     position: relative;
     .shopcar {
-      position: absolute;
-      height: 300px;
+      position: fixed;
+      max-height: 300px;
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
-      top: -300px;
+      bottom: 50px;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      overflow: auto;
     }
   }
 }

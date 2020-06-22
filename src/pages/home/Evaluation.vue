@@ -91,9 +91,6 @@
         </div>
       </div>
     </div>
-    <div>
-        <span @click="changename">{{getName}}</span>
-    </div>
   </div>
 </template>
 
@@ -145,14 +142,10 @@ export default {
       arr = `${year}-${month}-${day} ${h}:${m}:${s}`;
       return arr;
     },
-    changename(){
-        this.$store.commit('changeName','老干妈')
-    }
+    
   },
   computed:{
-      getName(){
-          return this.$store.state.data.name
-      }
+      
   }
 };
 </script>
